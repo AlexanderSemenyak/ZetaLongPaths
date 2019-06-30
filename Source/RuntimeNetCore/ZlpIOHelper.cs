@@ -1480,7 +1480,7 @@
         [SecuritySafeCritical]
         public static long GetFileLength(string filePath)
         {
-            Trace.TraceInformation(@"About to get file length for path '{0}'.", filePath);
+            //Trace.TraceInformation(@"About to get file length for path '{0}'.", filePath);
 
             // 2014-06-10, Uwe Keim: Weil das auf 64-bit-Windows 8 nicht sauber läuft,
             // zunächst mal bei kürzeren Pfaden die eingebaute Methode nehmen.
