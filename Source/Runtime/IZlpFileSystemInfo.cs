@@ -1,45 +1,31 @@
-﻿namespace ZetaLongPaths
+﻿namespace ZetaLongPaths;
+
+using Native;
+
+public interface IZlpFileSystemInfo
 {
-    using JetBrains.Annotations;
-    using Native;
-    using System;
+    [PublicAPI] bool Exists { get; }
+    [PublicAPI] string OriginalPath { get; }
+    [PublicAPI] string FullName { get; }
+    [PublicAPI] string Extension { get; }
+    [PublicAPI] string Name { get; }
+    [PublicAPI] DateTime LastWriteTime { get; set; }
+    [PublicAPI] DateTime LastAccessTime { get; set; }
+    [PublicAPI] DateTime CreationTime { get; set; }
+    [PublicAPI] FileAttributes Attributes { get; set; }
 
-    public interface IZlpFileSystemInfo
-    {
-        [UsedImplicitly]
-        bool Exists { get; }
+    [PublicAPI]
+    void MoveToRecycleBin();
 
-        [UsedImplicitly]
-        string OriginalPath { get; }
+    [PublicAPI]
+    string ToString();
 
-        [UsedImplicitly]
-        string FullName { get; }
+    [PublicAPI]
+    void Refresh();
 
-        [UsedImplicitly]
-        string Extension { get; }
+    [PublicAPI]
+    void Delete();
 
-        [UsedImplicitly]
-        string Name { get; }
-
-        [UsedImplicitly]
-        DateTime LastWriteTime { get; set; }
-
-        [UsedImplicitly]
-        DateTime LastAccessTime { get; set; }
-
-        [UsedImplicitly]
-        DateTime CreationTime { get; set; }
-
-        [UsedImplicitly]
-        FileAttributes Attributes { get; set; }
-
-        [UsedImplicitly]
-        void MoveToRecycleBin();
-
-        [UsedImplicitly]
-        string ToString();
-
-        [UsedImplicitly]
-        void MoveTo(string destinationDirectoryPath);
-    }
+    [PublicAPI]
+    void MoveTo(string destinationDirectoryPath);
 }

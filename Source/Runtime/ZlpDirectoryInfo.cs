@@ -1,258 +1,271 @@
-﻿namespace ZetaLongPaths
+﻿namespace ZetaLongPaths;
+
+using FileAttributes = Native.FileAttributes;
+
+// ReSharper disable once UseNameofExpression
+[DebuggerDisplay(@"{FullName}")]
+public class ZlpDirectoryInfo : IZlpFileSystemInfo
 {
-    using JetBrains.Annotations;
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using FileAttributes = Native.FileAttributes;
-
-    // ReSharper disable once UseNameofExpression
-    [DebuggerDisplay(@"{FullName}")]
-    public class ZlpDirectoryInfo : IZlpFileSystemInfo
+    public static ZlpDirectoryInfo GetTemp()
     {
-        public static ZlpDirectoryInfo GetTemp()
-        {
-            return new ZlpDirectoryInfo(ZlpPathHelper.GetTempDirectoryPath());
-        }
+        return new(ZlpPathHelper.GetTempDirectoryPath());
+    }
 
-        [UsedImplicitly]
-        public static ZlpDirectoryInfo GetFolderPath(
-            Environment.SpecialFolder specialFolder)
-        {
-            return new ZlpDirectoryInfo(Environment.GetFolderPath(specialFolder));
-        }
+    [PublicAPI]
+    public static ZlpDirectoryInfo GetFolderPath(
+        Environment.SpecialFolder specialFolder)
+    {
+        return new(Environment.GetFolderPath(specialFolder));
+    }
 
-        [UsedImplicitly]
-        public static ZlpDirectoryInfo GetFolderPath(
-            Environment.SpecialFolder specialFolder,
-            Environment.SpecialFolderOption option)
-        {
-            return new ZlpDirectoryInfo(Environment.GetFolderPath(specialFolder, option));
-        }
+    [PublicAPI]
+    public static ZlpDirectoryInfo GetFolderPath(
+        Environment.SpecialFolder specialFolder,
+        Environment.SpecialFolderOption option)
+    {
+        return new(Environment.GetFolderPath(specialFolder, option));
+    }
 
-        public ZlpDirectoryInfo(string path)
-        {
-            FullName = path;
-        }
+    public ZlpDirectoryInfo(string path)
+    {
+        FullName = path;
+    }
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo(DirectoryInfo path)
-        {
-            FullName = path?.FullName;
-        }
+    [PublicAPI]
+    public ZlpDirectoryInfo(DirectoryInfo path)
+    {
+        FullName = path?.FullName;
+    }
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo(ZlpDirectoryInfo path)
-        {
-            FullName = path?.FullName;
-        }
+    [PublicAPI]
+    public ZlpDirectoryInfo(ZlpDirectoryInfo path)
+    {
+        FullName = path?.FullName;
+    }
 
-        [UsedImplicitly]
-        public static ZlpDirectoryInfo FromOther(ZlpDirectoryInfo path)
-        {
-            return new ZlpDirectoryInfo(path);
-        }
+    [PublicAPI]
+    public static ZlpDirectoryInfo FromOther(ZlpDirectoryInfo path)
+    {
+        return new(path);
+    }
 
-        [UsedImplicitly]
-        public static ZlpDirectoryInfo FromString(string path)
-        {
-            return new ZlpDirectoryInfo(path);
-        }
+    [PublicAPI]
+    public static ZlpDirectoryInfo FromString(string path)
+    {
+        return new(path);
+    }
 
-        [UsedImplicitly]
-        public static ZlpDirectoryInfo FromBuiltIn(DirectoryInfo path)
-        {
-            return new ZlpDirectoryInfo(path);
-        }
+    [PublicAPI]
+    public static ZlpDirectoryInfo FromBuiltIn(DirectoryInfo path)
+    {
+        return new(path);
+    }
 
-        [UsedImplicitly]
-        public DirectoryInfo ToBuiltIn()
-        {
-            return new DirectoryInfo(FullName);
-        }
+    [PublicAPI]
+    public DirectoryInfo ToBuiltIn()
+    {
+        return new(FullName);
+    }
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo ToOther()
-        {
-            return Clone();
-        }
+    [PublicAPI]
+    public ZlpDirectoryInfo ToOther()
+    {
+        return Clone();
+    }
 
-        [UsedImplicitly]
-        public void Refresh()
-        {
-        }
+    [PublicAPI]
+    public void Refresh()
+    {
+    }
 
-        public string Extension => ZlpPathHelper.GetExtension(FullName);
+    public string Extension => ZlpPathHelper.GetExtension(FullName);
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo Clone()
-        {
-            return new ZlpDirectoryInfo(FullName);
-        }
+    [PublicAPI]
+    public ZlpDirectoryInfo Clone()
+    {
+        return new(FullName);
+    }
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo GetFullPath()
-        {
-            return new ZlpDirectoryInfo(ZlpPathHelper.GetFullPath(FullName));
-        }
+    [PublicAPI]
+    public ZlpDirectoryInfo GetFullPath()
+    {
+        return new(ZlpPathHelper.GetFullPath(FullName));
+    }
 
-        public bool Exists => ZlpIOHelper.DirectoryExists(FullName);
+    public bool Exists => ZlpIOHelper.DirectoryExists(FullName);
 
-        [UsedImplicitly]
-        public bool IsEmpty => ZlpIOHelper.DirectoryIsEmpty(FullName);
+    [PublicAPI] public bool IsEmpty => ZlpIOHelper.DirectoryIsEmpty(FullName);
 
-        public void MoveToRecycleBin()
-        {
-            ZlpIOHelper.MoveDirectoryToRecycleBin(FullName);
-        }
+    public void MoveToRecycleBin()
+    {
+        ZlpIOHelper.MoveDirectoryToRecycleBin(FullName);
+    }
 
-        public string OriginalPath => FullName;
+    public string OriginalPath => FullName;
 
-        public override string ToString()
-        {
-            return FullName;
-        }
+    public override string ToString()
+    {
+        return FullName;
+    }
 
-        public void Delete(bool recursive)
-        {
-            ZlpIOHelper.DeleteDirectory(FullName, recursive);
-        }
+    public void Delete()
+    {
+        ZlpIOHelper.DeleteDirectory(FullName, false);
+    }
 
-        [UsedImplicitly]
-        public void DeleteContents(bool recursive)
-        {
-            ZlpIOHelper.DeleteDirectoryContents(FullName, recursive);
-        }
+    public void Delete(bool recursive)
+    {
+        ZlpIOHelper.DeleteDirectory(FullName, recursive);
+    }
 
-        public void Create()
-        {
-            ZlpIOHelper.CreateDirectory(FullName);
-        }
+    [PublicAPI]
+    public void DeleteContents(bool recursive)
+    {
+        ZlpIOHelper.DeleteDirectoryContents(FullName, recursive);
+    }
 
-        public void MoveTo(string destinationDirectoryPath)
-        {
-            ZlpIOHelper.MoveDirectory(FullName, destinationDirectoryPath);
-        }
+    public void Create()
+    {
+        ZlpIOHelper.CreateDirectory(FullName);
+    }
 
-        public void MoveTo(ZlpDirectoryInfo destinationDirectoryPath)
-        {
-            ZlpIOHelper.MoveDirectory(FullName, destinationDirectoryPath.FullName);
-        }
+    /// <summary>
+    /// The destination folder may not exists yet, otherwise an error 183 will be thrown.
+    /// </summary>
+    public void MoveTo(string destinationDirectoryPath)
+    {
+        ZlpIOHelper.MoveDirectory(FullName, destinationDirectoryPath);
+    }
 
-        public string FullName { get; }
+    /// <summary>
+    /// The destination folder may not exists yet, otherwise an error 183 will be thrown.
+    /// </summary>
+    public void MoveTo(string destinationDirectoryPath, bool writeThrough)
+    {
+        ZlpIOHelper.MoveDirectory(FullName, destinationDirectoryPath, writeThrough);
+    }
 
-        public string Name => ZlpPathHelper.GetDirectoryNameOnlyFromFilePath(FullName);
+    /// <summary>
+    /// The destination folder may not exists yet, otherwise an error 183 will be thrown.
+    /// </summary>
+    public void MoveTo(ZlpDirectoryInfo destinationDirectoryPath, bool writeThrough = false)
+    {
+        ZlpIOHelper.MoveDirectory(FullName, destinationDirectoryPath.FullName, writeThrough);
+    }
 
-        public ZlpFileInfo[] GetFiles()
-        {
-            return ZlpIOHelper.GetFiles(FullName);
-        }
+    public string FullName { get; }
 
-        [UsedImplicitly]
-        public ZlpFileInfo[] GetFiles(string pattern)
-        {
-            return ZlpIOHelper.GetFiles(FullName, pattern);
-        }
+    public string Name => ZlpPathHelper.GetDirectoryNameOnlyFromFilePath(FullName);
 
-        [UsedImplicitly]
-        public ZlpFileInfo[] GetFiles(string pattern, SearchOption searchOption)
-        {
-            return ZlpIOHelper.GetFiles(FullName, pattern, searchOption);
-        }
+    public ZlpFileInfo[] GetFiles()
+    {
+        return ZlpIOHelper.GetFiles(FullName);
+    }
 
-        [UsedImplicitly]
-        public ZlpFileInfo[] GetFiles(SearchOption searchOption)
-        {
-            return ZlpIOHelper.GetFiles(FullName, searchOption);
-        }
+    [PublicAPI]
+    public ZlpFileInfo[] GetFiles(string pattern)
+    {
+        return ZlpIOHelper.GetFiles(FullName, pattern);
+    }
 
-        public IZlpFileSystemInfo[] GetFileSystemInfos()
-        {
-            return ZlpIOHelper.GetFileSystemInfos(FullName);
-        }
+    [PublicAPI]
+    public ZlpFileInfo[] GetFiles(string pattern, SearchOption searchOption)
+    {
+        return ZlpIOHelper.GetFiles(FullName, pattern, searchOption);
+    }
 
-        [UsedImplicitly]
-        public IZlpFileSystemInfo[] GetFileSystemInfos(string pattern)
-        {
-            return ZlpIOHelper.GetFileSystemInfos(FullName, pattern);
-        }
+    [PublicAPI]
+    public ZlpFileInfo[] GetFiles(SearchOption searchOption)
+    {
+        return ZlpIOHelper.GetFiles(FullName, searchOption);
+    }
 
-        [UsedImplicitly]
-        public IZlpFileSystemInfo[] GetFileSystemInfos(string pattern, SearchOption searchOption)
-        {
-            return ZlpIOHelper.GetFileSystemInfos(FullName, pattern, searchOption);
-        }
+    public IZlpFileSystemInfo[] GetFileSystemInfos()
+    {
+        return ZlpIOHelper.GetFileSystemInfos(FullName);
+    }
 
-        public IZlpFileSystemInfo[] GetFileSystemInfos(SearchOption searchOption)
-        {
-            return ZlpIOHelper.GetFileSystemInfos(FullName, searchOption);
-        }
+    [PublicAPI]
+    public IZlpFileSystemInfo[] GetFileSystemInfos(string pattern)
+    {
+        return ZlpIOHelper.GetFileSystemInfos(FullName, pattern);
+    }
 
-        public ZlpDirectoryInfo[] GetDirectories()
-        {
-            return ZlpIOHelper.GetDirectories(FullName);
-        }
+    [PublicAPI]
+    public IZlpFileSystemInfo[] GetFileSystemInfos(string pattern, SearchOption searchOption)
+    {
+        return ZlpIOHelper.GetFileSystemInfos(FullName, pattern, searchOption);
+    }
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo[] GetDirectories(string pattern)
-        {
-            return ZlpIOHelper.GetDirectories(FullName, pattern);
-        }
+    public IZlpFileSystemInfo[] GetFileSystemInfos(SearchOption searchOption)
+    {
+        return ZlpIOHelper.GetFileSystemInfos(FullName, searchOption);
+    }
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo[] GetDirectories(SearchOption searchOption)
-        {
-            return ZlpIOHelper.GetDirectories(FullName, searchOption);
-        }
+    public ZlpDirectoryInfo[] GetDirectories()
+    {
+        return ZlpIOHelper.GetDirectories(FullName);
+    }
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo[] GetDirectories(string pattern, SearchOption searchOption)
-        {
-            return ZlpIOHelper.GetDirectories(FullName, pattern, searchOption);
-        }
+    [PublicAPI]
+    public ZlpDirectoryInfo[] GetDirectories(string pattern)
+    {
+        return ZlpIOHelper.GetDirectories(FullName, pattern);
+    }
 
-        [UsedImplicitly]
-        public ZlpDirectoryInfo CreateSubdirectory(string name)
-        {
-            var path = ZlpPathHelper.Combine(FullName, name);
-            ZlpIOHelper.CreateDirectory(path);
-            return new ZlpDirectoryInfo(path);
-        }
+    [PublicAPI]
+    public ZlpDirectoryInfo[] GetDirectories(SearchOption searchOption)
+    {
+        return ZlpIOHelper.GetDirectories(FullName, searchOption);
+    }
 
-        public ZlpDirectoryInfo Parent =>
-            new ZlpDirectoryInfo(
-                ZlpPathHelper.GetDirectoryPathNameFromFilePath(FullName.TrimEnd(
-                    Path.DirectorySeparatorChar,
-                    Path.AltDirectorySeparatorChar)));
+    [PublicAPI]
+    public ZlpDirectoryInfo[] GetDirectories(string pattern, SearchOption searchOption)
+    {
+        return ZlpIOHelper.GetDirectories(FullName, pattern, searchOption);
+    }
 
-        public DateTime LastWriteTime
-        {
-            get => ZlpIOHelper.GetFileLastWriteTime(FullName);
-            set => ZlpIOHelper.SetFileLastWriteTime(FullName, value);
-        }
+    [PublicAPI]
+    public ZlpDirectoryInfo CreateSubdirectory(string name)
+    {
+        var path = ZlpPathHelper.Combine(FullName, name);
+        ZlpIOHelper.CreateDirectory(path);
+        return new ZlpDirectoryInfo(path);
+    }
 
-        public DateTime LastAccessTime
-        {
-            get => ZlpIOHelper.GetFileLastAccessTime(FullName);
-            set => ZlpIOHelper.SetFileLastAccessTime(FullName, value);
-        }
+    public ZlpDirectoryInfo Parent =>
+        new(
+            ZlpPathHelper.GetDirectoryPathNameFromFilePath(FullName.TrimEnd(
+                Path.DirectorySeparatorChar,
+                Path.AltDirectorySeparatorChar)));
 
-        public DateTime CreationTime
-        {
-            get => ZlpIOHelper.GetFileCreationTime(FullName);
-            set => ZlpIOHelper.SetFileCreationTime(FullName, value);
-        }
+    public DateTime LastWriteTime
+    {
+        get => ZlpIOHelper.GetFileLastWriteTime(FullName);
+        set => ZlpIOHelper.SetFileLastWriteTime(FullName, value);
+    }
 
-        public ZlpFileDateInfos DateInfos
-        {
-            get => ZlpIOHelper.GetFileDateInfos(FullName);
-            set => ZlpIOHelper.SetFileDateInfos(FullName, value);
-        }
+    public DateTime LastAccessTime
+    {
+        get => ZlpIOHelper.GetFileLastAccessTime(FullName);
+        set => ZlpIOHelper.SetFileLastAccessTime(FullName, value);
+    }
 
-        public FileAttributes Attributes
-        {
-            get => ZlpIOHelper.GetFileAttributes(FullName);
-            set => ZlpIOHelper.SetFileAttributes(FullName, value);
-        }
+    public DateTime CreationTime
+    {
+        get => ZlpIOHelper.GetFileCreationTime(FullName);
+        set => ZlpIOHelper.SetFileCreationTime(FullName, value);
+    }
+
+    public ZlpFileDateInfos DateInfos
+    {
+        get => ZlpIOHelper.GetFileDateInfos(FullName);
+        set => ZlpIOHelper.SetFileDateInfos(FullName, value);
+    }
+
+    public FileAttributes Attributes
+    {
+        get => ZlpIOHelper.GetFileAttributes(FullName);
+        set => ZlpIOHelper.SetFileAttributes(FullName, value);
     }
 }
