@@ -1,3 +1,5 @@
+orig: https://github.com/UweKeim/ZetaLongPaths
+
 # Zeta Long Paths
 
 A .NET library to access files and directories with more than 260 characters length.
